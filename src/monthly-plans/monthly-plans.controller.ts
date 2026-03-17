@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UseGuards,
 } from "@nestjs/common";
 import {
@@ -74,4 +75,13 @@ export class MonthlyPlansController {
   findOne(@Param("id") id: string) {
     return this.monthlyPlansService.findOne(+id);
   }
+  @Get("me")
+@Roles(UserRole.MANAGER, UserRole.ADMIN)
+getMyPlan(
+  @CurrentUser() user: any,
+  @Query("month") month: string,
+  @Query("year") year: string,
+) {
+  return this.monthlyPlansService.findMyPlan(user.userId, +month, +year);
+}
 }

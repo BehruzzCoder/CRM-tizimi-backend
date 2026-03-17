@@ -20,6 +20,18 @@ export class MonthlyPlansService {
     private readonly userRepo: Repository<User>
   ) {}
 
+  async findMyPlan(userId: number, month: number, year: number) {
+  return this.monthlyPlanRepo.find({
+    where: {
+      user: { id: userId },
+      month,
+      year,
+    },
+    relations: ["user"],
+    order: { id: "DESC" },
+  });
+}
+
   private async findManagerUser(userId: number) {
     const user = await this.userRepo.findOne({
       where: { id: userId, role: UserRole.MANAGER },
