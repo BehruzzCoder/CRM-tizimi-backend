@@ -14,6 +14,12 @@ import { PlansModule } from "./plans/plans.module";
 import { AnalyticsModule } from "./analytics/analytics.module";
 import { JwtAuthGuard } from "./auth/guards/jwt-auth.guard";
 import { RolesGuard } from "./auth/guards/roles.guard";
+import { MonthlyPlansModule } from './monthly-plans/monthly-plans.module';
+import { DailyFactsModule } from './daily-facts/daily-facts.module';
+import { ProgressModule } from './progress/progress.module';
+import { RatingModule } from './rating/rating.module';
+import { DashboardModule } from './dashboard/dashboard.module';
+import { SalaryModule } from './salary/salary.module';
 
 @Module({
   imports: [
@@ -40,6 +46,12 @@ import { RolesGuard } from "./auth/guards/roles.guard";
     PenaltiesModule,
     PlansModule,
     AnalyticsModule,
+    MonthlyPlansModule,
+    DailyFactsModule,
+    ProgressModule,
+    RatingModule,
+    DashboardModule,
+    SalaryModule,
   ],
   providers: [
     {

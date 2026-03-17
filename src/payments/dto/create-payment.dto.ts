@@ -1,48 +1,63 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import {
+  IsArray,
+  IsBoolean,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+} from "class-validator";
 import { Type } from "class-transformer";
-import { IsNumber, IsOptional, IsString, Min } from "class-validator";
 
 export class CreatePaymentDto {
-  @ApiProperty({ example: "Ali Valiyev" })
-  @IsString()
-  fullName: string;
-
-  @ApiProperty({ example: "+998901234567" })
-  @IsString()
-  phone: string;
-
   @ApiProperty({ example: 2 })
   @Type(() => Number)
   @IsNumber()
   @Min(1)
   managerId: number;
 
-  @ApiProperty({ example: "Mart 2026" })
+  @ApiProperty({ example: "Ali Valiyev" })
   @IsString()
-  stream: string;
+  clientName: string;
 
-  @ApiProperty({ example: "Standart" })
+  @ApiProperty({ example: "+998901234567" })
+  @IsString()
+  phone: string;
+
+  @ApiProperty({ example: "VIP" })
   @IsString()
   tariff: string;
 
-  @ApiProperty({ example: 1200000 })
+  @ApiProperty({ example: "Click" })
+  @IsString()
+  paymentType: string;
+
+  @ApiProperty({ example: 12000000 })
   @Type(() => Number)
   @IsNumber()
   @Min(0)
   amount: number;
 
-  @ApiProperty({ example: 0 })
+  @ApiProperty({ example: 22000000 })
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  contractAmount: number;
+
+  @ApiProperty({ example: 10000000 })
   @Type(() => Number)
   @IsNumber()
   @Min(0)
   debt: number;
 
-  @ApiProperty({ example: "FULL" })
-  @IsString()
-  paymentType: string;
-
-  @ApiProperty({ required: false, example: "receipt.jpg" })
+  @ApiPropertyOptional({ example: false })
   @IsOptional()
-  @IsString()
-  receipt?: string;
+  @Type(() => Boolean)
+  @IsBoolean()
+  bonusGiven?: boolean;
+
+  @ApiPropertyOptional({ type: [String], example: [] })
+  @IsOptional()
+  @IsArray()
+  receipts?: string[];
 }

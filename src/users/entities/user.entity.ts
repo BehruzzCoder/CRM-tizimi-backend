@@ -2,13 +2,16 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { UserRole } from "./user-role.enum";
+import { Payment } from "src/payments/entities/payment.entity";
 
 @Entity("users")
 export class User {
+  [x: string]: any;
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -23,6 +26,8 @@ export class User {
 
   @Column()
   password: string;
+  @OneToMany(()=> Payment, (payment) => payment.manager)
+  payments: Payment[];
 
   @Column({
     type: "enum",
@@ -45,4 +50,5 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+  payment: any;
 }

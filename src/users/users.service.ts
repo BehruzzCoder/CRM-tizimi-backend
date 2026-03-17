@@ -9,6 +9,7 @@ import * as bcrypt from "bcrypt";
 import { User } from "./entities/user.entity";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { UserRole } from "./entities/user-role.enum";
 
 @Injectable()
 export class UsersService {
@@ -112,6 +113,13 @@ export class UsersService {
     return await this.userRepo.save(user);
   }
 
+  async findManagers() {
+    return await this.userRepo.find({
+      where: { role: UserRole.MANAGER },
+      order: { id: "ASC" },
+      
+    });
+  }
   async remove(id: number) {
     const user = await this.findById(id);
 

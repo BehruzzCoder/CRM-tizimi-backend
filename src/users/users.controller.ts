@@ -50,7 +50,7 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get(":id")
+  @Get("managers/:id")
   @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: "Bitta userni olish (faqat admin)" })
   findOne(@Param("id") id: string) {
@@ -69,5 +69,11 @@ export class UsersController {
   @ApiOperation({ summary: "Userni o‘chirish (faqat admin)" })
   remove(@Param("id") id: string) {
     return this.usersService.remove(+id);
+  }
+  @Get("managers")
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: "Barcha managerlarni olish (faqat admin)" })
+  findManagers() {
+    return this.usersService.findManagers();
   }
 }

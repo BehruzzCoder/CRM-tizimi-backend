@@ -16,12 +16,14 @@ import { CheckInDto } from "./dto/check-in.dto";
 import { CheckOutDto } from "./dto/check-out.dto";
 import { PenaltiesService } from "../penalties/penalties.service";
 import { Settings } from "src/settings/entities/setting.entity";
+import { DailyFactsService } from "../daily-facts/daily-facts.service"; 
 
 dayjs.extend(customParseFormat);
 
 @Injectable()
 export class AttendanceService {
   constructor(
+    private readonly dailyFactsService: DailyFactsService,
     @InjectRepository(Attendance)
     private readonly attendanceRepo: Repository<Attendance>,
 
@@ -142,35 +144,42 @@ export class AttendanceService {
   }
 
   async checkOut(dto: CheckOutDto, imageName?: string) {
-    await this.findManagerUser(dto.userId);
+  await this.findManagerUser(dto.userId);
 
-    const today = this.getTodayDate();
+  const today = this.getTodayDate();
 
-    const attendance = await this.attendanceRepo.findOne({
-      where: {
-        user: { id: dto.userId },
-        date: today,
-      },
-    });
+  const attendance = await this.attendanceRepo.findOne({
+    where: {
+      user: { id: dto.userId },
+      date: today,
+    },
+  });
 
-    if (!attendance) {
-      throw new NotFoundException("Bu user bugun hali kelmagan");
-    }
-
-    if (!attendance.checkInTime) {
-      throw new ConflictException("User hali check-in qilmagan");
-    }
-
-    if (attendance.checkOutTime) {
-      throw new ConflictException("Bu user bugun allaqachon ketgan");
-    }
-
-    attendance.checkOutTime = this.getNowTime();
-    attendance.checkOutImage = imageName || null;
-
-    return await this.attendanceRepo.save(attendance);
+  if (!attendance) {
+    throw new NotFoundException("Bu user bugun hali kelmagan");
   }
 
+  if (!attendance.checkInTime) {
+    throw new ConflictException("User hali check-in qilmagan");
+  }
+
+  if (attendance.checkOutTime) {
+    throw new ConflictException("Bu user bugun allaqachon ketgan");
+  }
+
+  const hasFact = await this.dailyFactsService.hasFactForDate(dto.userId, today);
+
+  if (!hasFact) {
+    throw new ConflictException(
+      "Ketishdan oldin bugungi fact yozilishi kerak"
+    );
+  }
+
+  attendance.checkOutTime = this.getNowTime();
+  attendance.checkOutImage = imageName || null;
+
+  return await this.attendanceRepo.save(attendance);
+}
   async findAll() {
     return await this.attendanceRepo.find({
       order: { createdAt: "DESC" },

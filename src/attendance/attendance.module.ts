@@ -1,19 +1,21 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Attendance } from "./entities/attendance.entity";
-import { AttendanceController } from "./attendance.controller";
 import { AttendanceService } from "./attendance.service";
+import { AttendanceController } from "./attendance.controller";
+import { User } from "../users/entities/user.entity";
+import { Settings } from "../settings/entities/setting.entity";
 import { PenaltiesModule } from "../penalties/penalties.module";
-import { Settings } from "src/settings/entities/setting.entity";
-import { User } from "src/users/entities/user.entity";
+import { DailyFactsModule } from "../daily-facts/daily-facts.module";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Attendance, User, Settings]),
     PenaltiesModule,
+    DailyFactsModule,
   ],
-  controllers: [AttendanceController],
   providers: [AttendanceService],
+  controllers: [AttendanceController],
   exports: [AttendanceService],
 })
 export class AttendanceModule {}

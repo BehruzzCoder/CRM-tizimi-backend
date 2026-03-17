@@ -1,48 +1,44 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../../users/entities/user.entity";
 
-@Entity("payments")
+@Entity()
 export class Payment {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ManyToOne(() => User, (user) => user.payments, { onDelete: "CASCADE" })
+  manager: User;
+
   @Column()
-  fullName: string;
+  managerId: number;
+
+  @Column()
+  clientName: string;
 
   @Column()
   phone: string;
 
-  @ManyToOne(() => User, { eager: true, nullable: true, onDelete: "SET NULL" })
-  manager: User;
-
-  @Column()
-  stream: string;
-
   @Column()
   tariff: string;
-
-  @Column("decimal", { precision: 15, scale: 2, default: 0 })
-  amount: number;
-
-  @Column("decimal", { precision: 15, scale: 2, default: 0 })
-  debt: number;
-
-  @Column({ type: "text", nullable: true })
-  receipt: string | null;
 
   @Column()
   paymentType: string;
 
-  @CreateDateColumn()
-  createdAt: Date;
+  @Column("decimal")
+  amount: number;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @Column("decimal", { default: 0 })
+  contractAmount: number;
+
+  @Column("decimal", { default: 0 })
+  debt: number;
+
+  @Column("simple-array", { nullable: true })
+  receipts: string[];
+
+  @Column({ default: false })
+  bonusGiven: boolean;
+
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  createdAt: Date;
 }
